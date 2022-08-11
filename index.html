@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Distributions</title>
+    </head>
+    <body>
+        <h1>Installations</h1>
+        <h4>Choose an installation:</h4>
+        <ul>
+            <li>
+                For <b>Windows</b>, run the script in <span>Command Prompt.exe</span>
+            </li>
+            <li>
+                For <b>MacOS</b>, run the script in <span>Terminal.app</span>
+            </li>
+            <li>
+                For <b>Linux</b>, run the script in <span>Terminal.app</span>
+            </li>
+        </ul>
+        <h2>Scripts</h2>
+        <fieldset>
+            <details>
+                <summary>Rollaball</summary>
+                <!-- <textarea platform="macos"># install mac</textarea> -->
+                
+                <textarea platform="linux"># install linux</textarea>
+                <textarea platform="windows"># install windows</textarea>
+            </details>
+        </fieldset>
+
+        <script src="./assets/fontawesome/js/all.min.js"></script>
+
+        <script>
+            const PLATFORM = {
+                OTHER: -1,
+                WINDOWS: 0,
+                MAC: 1,
+                LINUX: 2
+            };
+
+            function getPlatform() {
+                const platform = navigator.platform;
+
+                if (platform.includes("Win"))
+                    return PLATFORM.WINDOWS;
+                else if (platform.includes("Mac"))
+                    return PLATFORM.MAC;
+                else if (platform.includes("Linux"))
+                    return PLATFORM.LINUX;
+                else
+                    return -1;
+            }
+
+            window.addEventListener("load", function() {
+                document.querySelectorAll("details").forEach(element => {
+                    let textareas = Array.from(element.children).filter(child => child.tagName == "TEXTAREA");
+
+                    let supported = true;
+                    let scriptValue = "";
+                    let platformString = "";
+
+                    switch (getPlatform()) {
+                        case PLATFORM.LINUX:
+                            platformString = "linux";
+                            break;
+                        case PLATFORM.MAC:
+                            platformString = "macos";
+                            break;
+                        case PLATFORM.WINDOWS:
+                            platformString = "windows";
+                            break;
+                        default:
+                            platformString = "none";
+                    }
+
+                    const area = textareas.filter(textarea => textarea.getAttribute("platform") == platformString)[0];
+                    supported = !!area;
+
+                    textareas.forEach(textarea => textarea.getAttribute("platform") != platformString ? textarea.remove() : "");
+
+                    let div = document.createElement("div");
+                    div.style.display = "flex";
+                    div.style.gap = "5px";
+                    
+                    let textarea = document.createElement("textarea");
+                    
+                    if (supported) {
+                        scriptValue = area.value;
+                        area.remove();
+                    } else {
+                        scriptValue = "PLATFORM NOT SUPPORTED";
+                        textarea.style.color = "red";
+                    }
+
+                    textarea.value = scriptValue;
+                    textarea.cols = scriptValue.length;
+
+                    textarea.rows = 1;
+                    textarea.style.resize = "none";
+                    textarea.readOnly = true;
+
+                    div.appendChild(textarea);
+
+                    if (supported) {
+                        let copybtn = document.createElement("button");
+                        copybtn.innerHTML = "<i class=\"fa fa-copy\"></i> Copy";
+    
+                        copybtn.addEventListener("click", function(e) {
+                            navigator.clipboard.writeText(scriptValue);
+                            e.target.innerHTML = "<i class=\"fa fa-copy\"></i> Copied!";
+                        });
+    
+                        div.appendChild(copybtn);
+                    }
+                    
+                    element.appendChild(div);
+                });
+            });
+        </script>
+    </body>
+</html>
